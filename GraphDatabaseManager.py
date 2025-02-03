@@ -9,13 +9,25 @@ class Node:
         self.class_id = class_id
         self.preferred_label = preferred_label
         self.parents = parents
+        
+     def to_dict(self):
+        return {
+            "class_id": self.class_id,
+            "preferred_label": self.preferred_label,
+            "parents": self.parents
+        }
+         
+    @staticmethod
+    def from_dict(data):
+        return Node(data["class_id"], data["preferred_label"], data["parents"])
+
 
     def get_parents_ids(self):
         return self.parents
 
 
 class GraphDatabaseManager:
-    def __init__(self):
+    def __init__(self, db_file="graph_database.json"):
         self.logger_name = 'GRAPH_DATABASE_LOGGER'
         setup_logger(self.logger_name)
         self.logger = logging.getLogger(self.logger_name)
@@ -24,7 +36,39 @@ class GraphDatabaseManager:
         self.adjacency = None
         self.distances = None
 
+        # Load database if it exists
+        if os.path.exists(self.db_file):
+            self.load_database()
 
+    def save_database(self):
+        data = {
+            "nodes": [node.to_dict() for node in self.nodes],
+            "elements": {key: node.to_dict() for key, node in self.elements.items()},
+            "adjacency": self.adjacency.tolist() if self.adjacency is not None else None,
+            "distances": self.distances.tolist() if self.distances is not None else None
+        }
+        
+        with open(self.db_file, "w") as f:
+            json.dump(data, f, indent=4)
+        self.logger.info("Database saved successfully.")
+
+    def load_database(self):
+        try:
+            with open(self.db_file, "r") as f:
+                data = json.load(f)
+            
+            self.nodes = [Node.from_dict(node_data) for node_data in data["nodes"]]
+            self.elements = {key: Node.from_dict(node_data) for key, node_data in data["elements"].items()}
+            self.adjacency = np.array(data["adjacency"]) if data["adjacency"] is not None else None
+            self.distances = np.array(data["distances"]) if data["distances"] is not None else None
+            
+            self.logger.info("Database loaded successfully.")
+        except Exception as e:
+            self.logger.error(f"Failed to load database: {e}")
+
+    def __del__(self):
+        self.save_database()
+        
 
     def _create_adjacency_matrix(self):
         self.logger.info('Creating adjacency matrix')
