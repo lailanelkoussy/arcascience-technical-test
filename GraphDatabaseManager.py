@@ -49,7 +49,8 @@ class GraphDatabaseManager:
             if node.parents is not None:
                 parent_nodes_id = [self.get_element_index_by_class_id(class_id) for class_id in node.parents]
                 for j in parent_nodes_id:
-                    self.adjacency[j, i] = 1  # There's a directed edge from parents (j) to children (i)
+                    self.adjacency[j, i] = 1
+                    self.adjacency[i, i] = 1
 
     def query(self, class_id: str):
         if class_id in self.elements:
