@@ -24,6 +24,8 @@ docker run \
 
 Reading and understanding exercise + data exploration : 10 minutes
 Building Graph database: started at 8:40 pm  paused 23h28
+Started again at : 20h45
+creating fastapi and requirements.txt
 
 I suppose, in this case, that existing relationships are fixed. This is to allow precalculations to be done at startup time, to maximise efficiency. 
 
