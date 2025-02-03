@@ -1,0 +1,32 @@
+from fastapi import FastAPI
+import pandas as pd
+import os
+from dotenv import load_dotenv
+from utils.data_utils import cleanup_dataframe
+
+from pydantic import BaseModel
+
+from GraphDatabaseManager import GraphDatabaseManager
+
+
+class SearchRequest(BaseModel):
+    class_id: str
+
+
+# Loading environment variables
+load_dotenv()
+
+DATA_PATH = os.environ.get("DATA_PATH", 'onto_x.csv')
+graph_db = GraphDatabaseManager()
+df = pd.read_csv(DATA_PATH)
+df = cleanup_dataframe(df)
+graph_db.import_data(df)
+
+app = FastAPI()
+
+
+
+@app.post('/ontology')
+async def get_class_ontology(request: SearchRequest):
+    result = graph_db.query(request.class_id)
+    return result

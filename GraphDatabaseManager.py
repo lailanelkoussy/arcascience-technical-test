@@ -1,8 +1,10 @@
 import logging
 from utils.logger_utils import setup_logger
+from utils.data_utils import cleanup_dataframe
 import pandas as pd
 import numpy as np
 import os
+from dotenv import load_dotenv
 from collections import deque
 
 
@@ -112,17 +114,16 @@ class GraphDatabaseManager:
         self._create_adjacency_matrix()
 
 
-def cleanup_dataframe(df):
-    df.Parents = df.Parents.astype(str)
-    df.Parents.loc[df.Parents.str.match('nan')] = None
-    df.Parents = df.Parents.str.split('|')
 
-    return df
 
 
 def main():
+    #Loading environment variables
+    load_dotenv()
+
+    DATA_PATH = os.environ.get("DATA_PATH",'onto_x.csv')
     graph_db = GraphDatabaseManager()
-    df = pd.read_csv('onto_x.csv')
+    df = pd.read_csv(DATA_PATH)
     df = cleanup_dataframe(df)
     graph_db.import_data(df)
 
