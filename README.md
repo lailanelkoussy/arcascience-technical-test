@@ -29,28 +29,36 @@ Run the script by executing :
 python GraphDatabaseManager.py
 ```
 
-# Setting up the FastAPI endpoint 
+# Option 1: Setting up the FastAPI endpoint 
 
 Set up the endpoint by executing : 
 
+Run Neo4J by running : 
+
+```bash 
+docker run \
+    --restart always \
+    --publish=7474:7474 --publish=7687:7687 \
+    --env NEO4J_AUTH=neo4j/your_password \
+    neo4j:5.26.2
+```
+
 ```bash
+python setup.py 
 uvicorn app:app --port=8080
 ```
+
+You can change username and password by changing the command credentials and changing the `NEO4J_USER`
+`NEO4J_PASSWORD` in the `.env` file accordingly. 
 
 You are able to access a test interface by visiting http://127.0.0.1:8080/docs on your browser. 
 
 
 # Building and running the docker image 
-Run the following command to build the image: 
+Run the following command to build and run the images: 
 
 ```bash
-docker build -t arcascience-test .
-```
-Then this command to run the container: 
-
-```bash 
-docker run -p 8080:8080 arcascience-test
-
+docker-compose up --build
 ```
 
 You can still access the test interface by visiting http://127.0.0.1:8080/docs on your browser. 
@@ -59,18 +67,25 @@ You can still access the test interface by visiting http://127.0.0.1:8080/docs o
 Firstly, there is an exploration folder containing a jupyter notebook that allowed me to discover the data in a quick 
 and hands on way. 
 
-The main logic for the code is contained in the `GraphDatabaseManager.py` file. In it contains a class which reads and parses the 
-csv file. After this, it creates an adjacency matrix representation for the data. 
+The main logic for the code is divided into two sections. 
+The first part is contained in the `GraphDatabaseManager.py` file. In it contains a class which reads and parses the 
+csv file. After this, it creates an adjacency matrix representation for the data. At query time, a breadth-first search is done to all possible neighbors, and a dictionary is returned with only the elements 'within reach' of the element.
 
-At query time, a breadth-first search is done to all possible neighbors, and a dictionary is returned with only the elements 'within reach' of the element.
+This is a more 'hands-on' approach. 
 
 
+The second part of the code is contained in the `Neo4jManager.py` file which interfaces with a Neo4J graph database. 
+The database is populated at startup using the `setup.py` script. 
+
+
+The endpoints allow to interact with both solutions. This allows for comparison. 
 
 ## Breakdown of the time taken
 
 - Reading and understanding exercise + data exploration : 10 minutes
 - Building Graph database manager: started at 3h30
 - Creating fastapi and requirements.txt + dockerfile : 40 minutes
+- Implementing Neo4J + docker-compose: 4h
 - Writing README: 15 minutes
 
 ## Possible improvements 

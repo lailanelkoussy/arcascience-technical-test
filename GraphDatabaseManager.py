@@ -107,7 +107,7 @@ class GraphDatabaseManager:
 
         for class_id in all_class_ids:
             if class_id not in self.elements:
-                self.nodes.append(Node(class_id=class_id, preferred_label='UNKNOWN_LABEL', parents=[]))
+                self.nodes.append(Node(class_id=class_id, preferred_label=f'UNKNOWN_LABEL_{class_id}', parents=[]))
                 self.elements[class_id] = self.nodes[-1]
 
 

@@ -14,8 +14,3 @@ RUN rm -f /app/exploration
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose port 8080 for FastAPI
-EXPOSE 8080
-
-# Run FastAPI application
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]
