@@ -51,7 +51,7 @@ uvicorn app:app --port=8080
 You can change username and password by changing the command credentials and changing the `NEO4J_USER`
 `NEO4J_PASSWORD` in the `.env` file accordingly. 
 
-You are able to access a test interface by visiting http://127.0.0.1:8080/docs on your browser. 
+You are able to access a test interface by visiting http://localhost:8080/docs on your browser. 
 
 
 # Building and running the docker image 
@@ -61,7 +61,7 @@ Run the following command to build and run the images:
 docker-compose up --build
 ```
 
-You can still access the test interface by visiting http://127.0.0.1:8080/docs on your browser. 
+You can still access the test interface by visiting http://localhost:8080/docs on your browser. 
 
 # Presenting the work 
 Firstly, there is an exploration folder containing a jupyter notebook that allowed me to discover the data in a quick 
